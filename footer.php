@@ -1,15 +1,15 @@
 <footer>
     <div class="container">
-        <p>&copy; Your Website 2018. All Rights Reserved.</p>
+        <p>&copy; بهمن پست ، تمامی حقوق محفوظ می باد.</p>
         <ul class="list-inline">
             <li class="list-inline-item">
-                <a href="#">Privacy</a>
+                <a href="#">حریم شخصی</a>
             </li>
             <li class="list-inline-item">
-                <a href="#">Terms</a>
+                <a href="#">شرایط</a>
             </li>
             <li class="list-inline-item">
-                <a href="#">FAQ</a>
+                <a href="#">راهنما</a>
             </li>
         </ul>
     </div>
