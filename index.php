@@ -1,6 +1,3 @@
-<?php
-
-echo 'bahman koni wa hadi gawyati bezhi bezhi hadi.... dedri dedid hadi';
-
-
-?>
+<?php get_header(); ?>
+<?php get_template_part('content'); ?>
+<?php get_footer(); ?>
