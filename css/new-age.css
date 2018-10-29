@@ -3,6 +3,10 @@
  * Copyright 2013-2018 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-new-age/blob/master/LICENSE)
  */
+@font-face {
+  font-family: 'BahmanShabnam';
+  src: url('../fonts/Shabnam.ttf')  format('truetype');
+}
 
 html,
 body {
@@ -12,7 +16,7 @@ body {
 
 body {
   /*font-family: 'Muli', 'Helvetica', 'Arial', 'sans-serif';*/
-  font: 12pt "Shabnam FD";
+  font: 12pt "BahmanShabnam";
 }
 
 a {
