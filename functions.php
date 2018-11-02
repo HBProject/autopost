@@ -104,6 +104,3 @@ add_action( 'rest_api_init', function () {
     ));
 } );
 
-
-
-// bahman/v1/post/
