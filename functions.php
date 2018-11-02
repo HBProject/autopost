@@ -35,10 +35,12 @@ function cd_meta_box_cb()
     // $post is already set, and contains an object: the WordPress post
     global $post;
     $values = get_post_custom( $post->ID );
-    $text = isset( $values['my_meta_box_text'] ) ? $values['my_meta_box_text'] : '';
+    $text = isset( $values['my_meta_box_text'][0] ) ? $values['my_meta_box_text'][0] : '';
+
 
     // We'll use this nonce field later on when saving.
     wp_nonce_field( 'my_meta_box_nonce', 'meta_box_nonce' );
+    echo 'text is '.  $text;
     ?>
     <p>
         <label for="my_meta_box_text">Text Label</label>
@@ -76,31 +78,31 @@ function cd_meta_box_save( $post_id )
 
 
 
-add_action( 'rest_api_init', function () {
-    register_rest_route('bahman/v1', '/posts/', array(
-        'methods' => 'GET',
-        'callback' => 'my_awesome_func',
-    ));
-} );
+//add_action( 'rest_api_init', function () {
+//    register_rest_route('bahman/v1', '/posts/', array(
+//        'methods' => 'GET',
+//        'callback' => 'my_awesome_func',
+//    ));
+//} );
+//
 
 
 
-
-function my_awesome_func2( $data ) {
-    $post = get_post($data['post_id']);
-    $output = [];
-    $output['title'] = $post->post_title;
-    $output['image'] = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
-    $output['full_image'] = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
-    return $output;
-}
-
-
-
-add_action( 'rest_api_init', function () {
-    register_rest_route('bahman/v1', '/post/(?P<post_id>\d+)', array(
-        'methods' => 'GET',
-        'callback' => 'my_awesome_func2',
-    ));
-} );
-
+//function my_awesome_func2( $data ) {
+//    $post = get_post($data['post_id']);
+//    $output = [];
+//    $output['title'] = $post->post_title;
+//    $output['image'] = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
+//    $output['full_image'] = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
+//    return $output;
+//}
+//
+//
+//
+//add_action( 'rest_api_init', function () {
+//    register_rest_route('bahman/v1', '/post/(?P<post_id>\d+)', array(
+//        'methods' => 'GET',
+//        'callback' => 'my_awesome_func2',
+//    ));
+//} );
+//
