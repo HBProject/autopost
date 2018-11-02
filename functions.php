@@ -7,7 +7,12 @@ function setup(){
 }
 
 
+add_action('wp_enqueue_scripts', 'my_register_script_method');
 
+function my_register_script_method () {
+    wp_enqueue_script( 'jquery' );
+    wp_enqueue_media();
+}
 
 function my_awesome_func( $data ) {
     $posts = get_posts();
@@ -29,22 +34,117 @@ function cd_meta_box_add()
     add_meta_box( 'my-meta-box-id', 'My First Meta Box', 'cd_meta_box_cb', 'post', 'normal', 'high' );
 }
 
-
 function cd_meta_box_cb()
 {
     // $post is already set, and contains an object: the WordPress post
     global $post;
     $values = get_post_custom( $post->ID );
-    $text = isset( $values['my_meta_box_text'][0] ) ? $values['my_meta_box_text'][0] : '';
+
+    $medias = get_post_meta($post->ID, 'medias', true);
 
 
     // We'll use this nonce field later on when saving.
     wp_nonce_field( 'my_meta_box_nonce', 'meta_box_nonce' );
-    echo 'text is '.  $text;
     ?>
+    <style>
+        .media-container{
+            margin-bottom: 20px;
+        }
+        .media-container img{
+            width: 100px;
+            height: 100px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin: 10px;
+            display: block;
+        }
+        .media-item {
+            display: inline-block;
+            text-align: center;
+        }
+        .media-item button{
+            display: block;
+        }
+    </style>
+    <script>
+        $(function () {
+
+            var media_uploader = null;
+
+            var medias_size = $('.media-container img').length;
+            var next = medias_size;
+
+
+
+
+            function open_media_uploader_gallery()
+            {
+                media_uploader = wp.media({
+                    frame:    "post",
+                    state:    "gallery-edit",
+                    multiple: true
+                });
+
+                media_uploader.on("update", function(){
+
+                    var length = media_uploader.state().attributes.library.length;
+                    var images = media_uploader.state().attributes.library.models;
+
+                    for(var iii = 0; iii < length; iii++)
+                    {
+                        var image_id = images[iii].attributes.id;
+                        var image_url = images[iii].changed.url;
+                        var image_caption = images[iii].changed.caption;
+                        var image_title = images[iii].changed.title;
+                        var image_description = images[iii].changed.description;
+
+                        //this object contains URL for medium, small, large and full sizes URL.
+                        var sizes = images[iii].changed.sizes;
+
+
+
+                        $('.media-container').append('<div class="media-item"><img src="'+ image_url +'" ><input name="media'+ next +'" type="hidden" value="'+ image_id +'"><button type="button" id="delete-media" class="button button-link-delete">&times;</button></div>');
+                        next++;
+
+
+
+                    }
+
+
+                    $('.media-container').append('<input name="media_count" type="hidden" value="'+(length + medias_size)+'">');
+
+                });
+
+                media_uploader.open();
+            }
+
+
+            $('#add-media').click(function () {
+                open_media_uploader_gallery();
+            });
+
+
+
+
+        });
+    </script>
     <p>
-        <label for="my_meta_box_text">Text Label</label>
-        <input type="text" name="my_meta_box_text" id="my_meta_box_text" value="<?php echo $text; ?>" />
+
+        <div class="media-container">
+            <?php if ( !empty($medias) ): ?>
+                    <?php foreach ( $medias as $index => $media ):  ?>
+                <div class="media-item">
+                        <img src="<?= wp_get_attachment_url( $media ) ?>">
+                        <input id="item<?= $index ?>" name="media_<?= $index ?>" type="hidden" value="<?= $media ?>">
+                        <button type="button" data-delete="item<?= $index ?>" id="delete-media" class="button button-link-delete">&times;</button>
+                </div>
+                    <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <button type="button" id="add-media" class="button button-primary ">اضافه کردن عکس</button>
+
+
     </p>
     <?php
 }
@@ -53,6 +153,8 @@ function cd_meta_box_cb()
 add_action( 'save_post', 'cd_meta_box_save' );
 function cd_meta_box_save( $post_id )
 {
+
+//    var_dump($_POST);
     // Bail if we're doing an auto save
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
@@ -72,7 +174,17 @@ function cd_meta_box_save( $post_id )
     // Make sure your data is set before trying to save it
     if (isset($_POST['my_meta_box_text']))
         update_post_meta($post_id, 'my_meta_box_text', wp_kses($_POST['my_meta_box_text'], $allowed));
+
+
+    $medias = [];
+    for ($index = 0; $index < $_POST['media_count'] ; $index++) {
+        $medias[$index] = $_POST["media$index"];
+    }
+    update_post_meta($post_id, 'medias', $medias);
+
+
 }
+
 
 // End Meta Boxes
 
